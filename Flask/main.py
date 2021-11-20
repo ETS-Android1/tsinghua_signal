@@ -13,21 +13,6 @@ import pymysql
 import pymysql.cursors
 from sqlalchemy import create_engine
 
-db_reader = pymysql.connect(
-    host = "127.0.0.1",
-    port = int(3306),
-    user = 'root',
-    passwd = '',
-    db = 'web',
-    charset = 'utf8mb4',
-    cursorclass = pymysql.cursors.DictCursor)
-
-db_writer = create_engine('mysql+pymysql://root:@127.0.0.1')
-usr_data = pd.read_sql_query("SELECT * FROM usr", db_reader)
-
-# Session Initialization
-app.config['SECRET_KEY'] = 'InfiArk_Internship_2020'
-
 
 @app.route("/")
 def init():
