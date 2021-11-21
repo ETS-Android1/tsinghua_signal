@@ -4,4 +4,4 @@ The repository is dedicated to a course at Tsinghua University.
 * Course ID: 86010053
 * Semester: Fall 2021
 
-My main contribution in the project centers around the remote end for data warehousinng, which was powered with Flask.
+My main contribution in the project centers around the remote end for data warehousinng, which was powered with Flask. Jiexin developed the prototype using Arduino.
