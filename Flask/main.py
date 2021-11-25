@@ -2,27 +2,11 @@ from flask import Flask, redirect, render_template, request, session, url_for
 import pandas as pd
 # import json
 # import random
-# import datetime
-# from datetime import timedelta
 
 # Flask Initialization
 app = Flask(__name__)
 
-# MySQL Initialization
-import pymysql
-import pymysql.cursors
-from sqlalchemy import create_engine
-
-
 @app.route("/")
-def init():
-    usrname = session.get('usr')
-    print(usrname)
-    if (usrname):
-        return render_template("main.html", usrname=usrname)
-    else:
-        return render_template("login.html")
-
 
 @app.route("/login", methods=["POST"])
 def login():
