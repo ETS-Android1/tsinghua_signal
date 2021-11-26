@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 @app.route("/")
 
+'''
 @app.route("/login", methods=["POST"])
 def login():
     if request.method == "POST":
@@ -38,7 +39,6 @@ def register():
             session['usr'] = str(usr)
             return redirect("/")
 
-
 @app.route("/login")
 def lock():
     return render_template("login.html")
@@ -48,7 +48,7 @@ def lock():
 def logout():
     session['usr'] = False
     return redirect("/")
-
+'''
 
 @app.errorhandler(400) # Redirecting "Bad Request"
 def bad_request(e):
