@@ -3,6 +3,7 @@
 
 # Byte-compiled / optimized / DLL files
 Signal_processing/data/
+Signal_processing/model/
 
 __pycache__/
 *.py[cod]
@@ -141,3 +142,15 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Android
+./Android/*.iml
+./Android/.gradle
+./Android/local.properties
+./Android/idea/workspace.xml
+./Android/idea/libraries
+./Android/.DS_Store
+./Android/build
+./Android/captures
+./Android/.externalNativeBuild
+./Android/.idea
