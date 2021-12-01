@@ -144,13 +144,13 @@ dmypy.json
 cython_debug/
 
 # Android
-./Android/*.iml
-./Android/.gradle
-./Android/local.properties
-./Android/idea/workspace.xml
-./Android/idea/libraries
-./Android/.DS_Store
-./Android/build
-./Android/captures
-./Android/.externalNativeBuild
-./Android/.idea
+./Android/multiBLE/*.iml
+./Android/multiBLE/.gradle
+./Android/multiBLE/local.properties
+./Android/multiBLE/idea/workspace.xml
+./Android/multiBLE/idea/libraries
+./Android/multiBLE/.DS_Store
+./Android/multiBLE/build
+./Android/multiBLE/captures
+./Android/multiBLE/.externalNativeBuild
+./Android/multiBLE/.idea
