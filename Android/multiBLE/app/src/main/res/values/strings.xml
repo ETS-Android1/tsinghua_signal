@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">MultiBLE</string>
+    <string name="open_setting">Setting</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="ble_location_not_open">no check</string>
+    <string name="ble_location_not">no check</string>
+    <string name="setting">Setting</string>
+    <string name="notifyTitle">Tip</string>
+    <string name="notifyMsg">Lack Permission \n\nClick\"Setting\"-\"Permission\"-Open permission。</string>
+    <string name="gpsNotifyMsg">Please activate GPS function。\n\nClick \"Setting\"-\"Position Service\"-Open High Accuracy Position Function</string>
+    <string name="busywrite">Module is busy, wait a minute.</string>
+    <string name="calibration">Acc Cali</string>
+    <string name="Magnetic_calibration">Mag cal</string>
+    <string name="Angle_reference">Ang ref</string>
+    <string name="accomplish">Accomplish</string>
+    <string name="record">Record</string>
+    <string name="menu_stop">stop</string>
+    <string name="menu_start">start</string>
+    <string name="start_time">Start Time：</string>
+    <string name="stop_time">Stop Time：</string>
+    <string name="input_path">"Please input directory:"</string>
+    <string name="OK">OK</string>
+    <string name="hint">Tip</string>
+    <string name="Cancel">cancel</string>
+    <string name="data_record">Data has been saved on root file：</string>
+</resources>

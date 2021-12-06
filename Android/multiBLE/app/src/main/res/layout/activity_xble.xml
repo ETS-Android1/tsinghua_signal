@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.maiji.magkareble40.XBleActivity">
+
+    <include layout="@layout/title_bar"></include>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="225dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/txtContentMac"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:padding="10dp"
+            android:text=""
+            android:textSize="15sp" />
+
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="454dp">
+
+        <TextView
+            android:id="@+id/txtShowRes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/select"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/bt_AccCali"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/calibration" />
+        <Button
+            android:id="@+id/bt_MagCali"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Magnetic_calibration" />
+        <Button
+            android:id="@+id/bt_Record"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/record" />
+    </LinearLayout>
+</LinearLayout>
