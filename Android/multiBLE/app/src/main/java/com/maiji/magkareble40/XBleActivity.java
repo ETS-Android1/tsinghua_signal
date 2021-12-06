@@ -40,6 +40,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -141,7 +142,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         }
 
         motionType = new HashMap<Integer, String>();
-        motionType.put(0,"turn left'");
+        motionType.put(0,"turn left");
         motionType.put(1, "turn right");
         motionType.put(2, "up");
         motionType.put(3, "down");
@@ -600,6 +601,8 @@ public class XBleActivity extends Activity implements View.OnClickListener {
     }
 
     public double [] interpolation(int dataLen){
+        Log.i("dataLen:", String.valueOf(dataLen));
+        dataLen = Math.min(dataLen, maxLen);
         double[] feature = new double[maxLen*imuData.size()];
         for(int i=0;i<6;i++){
             double[] y = new double[dataLen];
@@ -610,13 +613,30 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                 x[j] = j;
                 j++;
             }
+//            System.out.println(Arrays.toString(y));
+
             SplineInterpolator sp = new SplineInterpolator();
             PolynomialSplineFunction f = sp.interpolate(x, y);
-            double delta = (dataLen-1)/(maxLen-1);
+            double delta = (double)(dataLen-1)/(maxLen-1);
+//            double[] tmp = new double[maxLen];
             for(int k=0;k<maxLen;k++){
-                feature[maxLen*i+k] = f.value(k*delta);
+//                System.out.print(k*delta);
+//                System.out.print(' ');
+//                System.out.print(f.value(k*delta));
+//                System.out.print(' ');
+                double v = k*delta;
+                if(k == maxLen-1){
+                    double max_v = f.getKnots()[f.getKnots().length-1];
+                    v = max_v;
+                }
+                feature[maxLen*i+k] = f.value(v);
+//                tmp[k] = f.value(k*delta);
             }
+//            System.out.println(Arrays.toString(tmp));
         }
+//        System.out.println();
+//        System.out.println(Arrays.toString(feature));
+//        System.out.println(feature.length);
         return feature;
     }
 
@@ -656,41 +676,43 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                         Message message = handler.obtainMessage();
                         message.what = motionTypeRaw;
                         handler.sendMessage(message);
-                    }
-                    if(motionTypeRaw >=10){
-                        if(motionTypeRaw == motionTypeFinal){
-                            numCnt += 1;
-                        }
-                        else{
-                            motionTypeFinal = motionTypeRaw;
-                            numCnt = 1;
-                        }
-                        isFirstMotion = true;
-                    }
-                    else{
-                        if(isFirstMotion){
-                            if(motionTypeFinal != motionTypeRaw){
-                                motionTypeFinal = motionTypeRaw;
-                                numCnt = 0;
-                            }
-                        }
-                        else{
-                            if(motionTypeFinal == motionTypeRaw + (int)Math.pow(-1,motionTypeRaw%2)){
+
+                        if(motionTypeRaw >=10){
+                            if(motionTypeRaw == motionTypeFinal){
                                 numCnt += 1;
                             }
                             else{
-                                Log.i("refresh data:", "predict wrong");
+                                motionTypeFinal = motionTypeRaw;
+                                numCnt = 1;
                             }
+                            isFirstMotion = true;
                         }
-                        isFirstMotion = !isFirstMotion;
-                    }
-                    if(numCnt == 5){
-                        motionCnt.put(motionTypeFinal,motionCnt.get(motionTypeFinal) + 1);
-                        numCnt = 0;
+                        else{
+                            if(isFirstMotion){
+                                if(motionTypeFinal != motionTypeRaw){
+                                    motionTypeFinal = motionTypeRaw;
+                                    numCnt = 0;
+                                }
+                            }
+                            else{
+                                if(motionTypeFinal == motionTypeRaw + (int)Math.pow(-1,motionTypeRaw%2)){
+                                    numCnt += 1;
+                                }
+                                else{
+                                    Log.i("refresh data:", "predict wrong");
+                                }
+                            }
+                            isFirstMotion = !isFirstMotion;
+                        }
+                        if(numCnt == 5){
+                            motionCnt.put(motionTypeFinal,motionCnt.get(motionTypeFinal) + 1);
+                            numCnt = 0;
+                        }
+
+                        isStart = false;
+                        startCnt = 0;
                     }
 
-                    isStart = false;
-                    startCnt = 0;
 
                 }
                 startCnt += 1;

@@ -3,19 +3,24 @@ import android.content.res.AssetManager;
 import android.util.Log;
 
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.PMML;
 import org.jpmml.evaluator.Evaluator;
 import org.jpmml.evaluator.FieldValue;
 import org.jpmml.evaluator.InputField;
+import org.jpmml.evaluator.ModelEvaluator;
+import org.jpmml.evaluator.ModelEvaluatorFactory;
 import org.jpmml.evaluator.ModelField;
 import org.jpmml.evaluator.ProbabilityDistribution;
 import org.jpmml.evaluator.TargetField;
 import org.jpmml.evaluator.VoteDistribution;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ClfModel {
     private Evaluator evaluator;
@@ -43,6 +48,14 @@ public class ClfModel {
         try(InputStream is = assetManager.open("model.pmml.ser")){
             return MyEvaluatorUtil.createEvaluator(is);
         }
+//        PMML pmml;
+//        InputStream inputStream = assetManager.open("svm_model.pmml");
+//        try (InputStream is = inputStream) {
+//            pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
+//            ModelEvaluatorFactory modelEvaluatorFactory = ModelEvaluatorFactory.newInstance();
+//            ModelEvaluator<?> modelEvaluator = modelEvaluatorFactory.newModelEvaluator(pmml);
+//            return (Evaluator) modelEvaluator;
+//        }
     }
 
     static
@@ -81,6 +94,9 @@ public class ClfModel {
 
 
 //        System.out.println(targetFieldValue);
+//        Set<String> cat = ((VoteDistribution) targetFieldValue).getCategoryValues();
+//        System.out.println(cat);
+
 
         return target;
     }
