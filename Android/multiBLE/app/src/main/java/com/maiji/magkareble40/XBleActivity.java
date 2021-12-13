@@ -1,7 +1,6 @@
 package com.maiji.magkareble40;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -40,8 +39,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,6 +76,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
     ArrayList<BluetoothGatt> gattArrayList; //设备gatt集合
 
     private TextView txtShowRes; //显示预测结果
+    private TextView txtMotionName; //显示预测结果
     private static Context Context = null;
     private ArrayList<ArrayList<Float>> imuData;
     final private int maxLen = 100;
@@ -119,7 +117,14 @@ public class XBleActivity extends Activity implements View.OnClickListener {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                txtShowRes.setText(motionType.get(msg.what));
+                int res = msg.what;
+                if(res > 5){
+                    res -= 4;
+                }
+                txtShowRes.setText(motionType.get(res)+"\n\n");
+                for(int i=0;i<10;i++){
+                    txtShowRes.append(motionCnt.get(i)+" groups"+"\n");
+                }
             }
         };
 
@@ -148,11 +153,11 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         motionType.put(3, "down");
         motionType.put(4, "tile left");
         motionType.put(5, "tile right");
-        motionType.put(10, "circle clockwise");
-        motionType.put(11, "circle counterclockwise");
-        motionType.put(12, "eight left");
-        motionType.put(13, "eight right");
-        motionType.put(14, "none");
+        motionType.put(6, "circle clockwise");
+        motionType.put(7, "circle counterclockwise");
+        motionType.put(8, "eight left");
+        motionType.put(9, "eight right");
+        motionType.put(10, "none");
 
         svm = new ClfModel();
 
@@ -175,7 +180,14 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         button = (Button) findViewById(R.id.bt_AccCali);button.setOnClickListener(this);
         Record=(Button) findViewById(R.id.bt_Record);Record.setOnClickListener(this);
         button_cc = (Button) findViewById(R.id.bt_MagCali);button_cc.setOnClickListener(this);//磁场校准
+        txtMotionName = (TextView) findViewById(R.id.txtMotionName);
+        txtMotionName.setText("current motion:\n\n");
         txtShowRes = (TextView) findViewById(R.id.txtShowRes);
+        txtShowRes.setText("None\n\n");
+        for(int i=0;i<10;i++){
+            txtMotionName.append(motionType.get(i)+":\n");
+            txtShowRes.append(motionCnt.get(i)+" groups\n");
+        }
     }
 
 
@@ -673,9 +685,9 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                         double[] feature = interpolation(winLen+startCnt);
                         motionTypeRaw = svm.predictMotion(feature);
 //                        txtShowRes.setText(motionType.get(motionTypeRaw));
-                        Message message = handler.obtainMessage();
-                        message.what = motionTypeRaw;
-                        handler.sendMessage(message);
+//                        Message message = handler.obtainMessage();
+//                        message.what = motionTypeRaw;
+//                        handler.sendMessage(message);
 
                         if(motionTypeRaw >=10){
                             if(motionTypeRaw == motionTypeFinal){
@@ -686,6 +698,9 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                                 numCnt = 1;
                             }
                             isFirstMotion = true;
+                            Message message = handler.obtainMessage();
+                            message.what = motionTypeRaw;
+                            handler.sendMessage(message);
                         }
                         else{
                             if(isFirstMotion){
@@ -697,6 +712,9 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                             else{
                                 if(motionTypeFinal == motionTypeRaw + (int)Math.pow(-1,motionTypeRaw%2)){
                                     numCnt += 1;
+                                    Message message = handler.obtainMessage();
+                                    message.what = motionTypeFinal;
+                                    handler.sendMessage(message);
                                 }
                                 else{
                                     Log.i("refresh data:", "predict wrong");
@@ -705,7 +723,11 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                             isFirstMotion = !isFirstMotion;
                         }
                         if(numCnt == 5){
-                            motionCnt.put(motionTypeFinal,motionCnt.get(motionTypeFinal) + 1);
+                            int res = motionTypeFinal;
+                            if(motionTypeFinal > 5){
+                                res -= 4;
+                            }
+                            motionCnt.put(res,motionCnt.get(res) + 1);
                             numCnt = 0;
                         }
 

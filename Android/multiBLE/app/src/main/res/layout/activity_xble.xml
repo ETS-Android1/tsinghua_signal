@@ -30,13 +30,28 @@
         android:layout_width="match_parent"
         android:layout_height="454dp">
 
-        <TextView
-            android:id="@+id/txtShowRes"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textAlignment="center"
-            android:textSize="36sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtMotionName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_weight="1"
+                android:text="TextView"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtShowRes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TextView"
+                android:textSize="18sp" />
+        </LinearLayout>
     </ScrollView>
 
     <LinearLayout
