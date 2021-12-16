@@ -87,6 +87,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
     private int winLen = 5;
     private int startTh = 15;
     private int stopTh = 5;
+
     private boolean isStart = false;
     private int startCnt = 1;
     private int numCnt = 0;
@@ -99,6 +100,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
     private int timerTotal = 0;
 
     private Handler handler;
+    private boolean isLogin = false;
 
 
     Button button,button_cc,Record;
@@ -177,6 +179,17 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         for(int i=0;i<15;i++){
             motionCnt.put(i,0);
         }
+
+        isStart = false;
+        startCnt = 1;
+        numCnt = 0;
+        isFirstMotion = true;
+        motionTypeFinal = 14;
+        resetPredict = false;
+        headphoneState = "Put on";
+        motionTypeRaw = 14;
+        timerTotal = 0;
+        isLogin = false;
     }
 
 
@@ -192,6 +205,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         button = (Button) findViewById(R.id.bt_AccCali);button.setOnClickListener(this);
         Record=(Button) findViewById(R.id.bt_Record);Record.setOnClickListener(this);
         button_cc = (Button) findViewById(R.id.bt_MagCali);button_cc.setOnClickListener(this);//磁场校准
+
         txtMotionName = (TextView) findViewById(R.id.txtMotionName);
         txtMotionName.setText("current motion:\n\n");
         txtShowRes = (TextView) findViewById(R.id.txtShowRes);
@@ -202,6 +216,15 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         }
         txtMotionName.append("stay still:\n");
         txtShowRes.append("0 seconds");
+
+        TextView tv_login = (TextView) findViewById(R.id.tv_left);
+        if(isLogin){
+            tv_login.setText("Sign in");
+        }
+        else {
+            tv_login.setText("Sign out");
+        }
+        tv_login.setOnClickListener(this);
     }
 
 
@@ -247,6 +270,17 @@ public class XBleActivity extends Activity implements View.OnClickListener {
             case R.id.tv_right:
                 Intent intent = new Intent(this, SelectDeviceActivity.class);
                 startActivityForResult(intent, 1);
+                break;
+            case R.id.tv_left:
+                if(isLogin){
+                    initVariables();
+                    initView();
+                    Toast.makeText(getApplicationContext(), "Sign out successfully!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent_login = new Intent(this, LoginActivity.class);
+                    startActivityForResult(intent_login,2);
+                }
                 break;
             case R.id.bt_Record:
                 if (isRxd) {
