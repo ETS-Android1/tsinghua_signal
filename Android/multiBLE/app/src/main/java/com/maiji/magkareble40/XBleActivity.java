@@ -38,6 +38,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -95,6 +96,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
     private String headphoneState = "Put on";
     private int motionTypeRaw = 14;
     private Map<Integer, Integer> motionCnt;
+    private int timerTotal = 0;
 
     private Handler handler;
 
@@ -117,16 +119,26 @@ public class XBleActivity extends Activity implements View.OnClickListener {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                int res = msg.what;
-                if(res > 5){
-                    res -= 4;
+                switch (msg.what){
+                    case 0:
+                        int res = msg.arg1;
+                        if(res > 5){
+                            res -= 4;
+                        }
+                        txtShowRes.setText(motionType.get(res)+' '+msg.arg2+"\n\n");
+                        break;
+                    case 1:
+                        txtShowRes.setText(motionType.get(10)+"\n\n");
                 }
-                txtShowRes.setText(motionType.get(res)+"\n\n");
+
                 for(int i=0;i<10;i++){
                     txtShowRes.append(motionCnt.get(i)+" groups"+"\n");
                 }
+                txtShowRes.append(timerTotal + " seconds");
             }
         };
+
+        stillTimeCounter();
 
     }
 
@@ -188,6 +200,8 @@ public class XBleActivity extends Activity implements View.OnClickListener {
             txtMotionName.append(motionType.get(i)+":\n");
             txtShowRes.append(motionCnt.get(i)+" groups\n");
         }
+        txtMotionName.append("stay still:\n");
+        txtShowRes.append("0 seconds");
     }
 
 
@@ -699,7 +713,9 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                             }
                             isFirstMotion = true;
                             Message message = handler.obtainMessage();
-                            message.what = motionTypeRaw;
+                            message.what = 0;
+                            message.arg1 = motionTypeFinal;
+                            message.arg2 = numCnt;
                             handler.sendMessage(message);
                         }
                         else{
@@ -713,7 +729,9 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                                 if(motionTypeFinal == motionTypeRaw + (int)Math.pow(-1,motionTypeRaw%2)){
                                     numCnt += 1;
                                     Message message = handler.obtainMessage();
-                                    message.what = motionTypeFinal;
+                                    message.what = 0;
+                                    message.arg1 = motionTypeFinal;
+                                    message.arg2 = numCnt;
                                     handler.sendMessage(message);
                                 }
                                 else{
@@ -740,6 +758,44 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                 startCnt += 1;
             }
         }
+    }
+
+    int delta_total_time = 0;
+    long start_time = System.currentTimeMillis();
+    private void stillTimeCounter() {
+        final Handler handler_new = new Handler();
+        handler_new.post(new Runnable() {
+                         @Override
+                         public void run() {
+                             if(isStart){
+                                 if(delta_total_time > 10){
+                                     resetParam();
+                                 }
+                                 delta_total_time = 0;
+                             }
+                             else {
+                                 long end_time = System.currentTimeMillis();
+                                 if(end_time-start_time > 1000){
+                                     delta_total_time += 1;
+                                     start_time = System.currentTimeMillis();
+                                     if(delta_total_time > 15){
+                                         timerTotal += 1;
+                                         motionTypeRaw = 10;
+                                         motionTypeFinal = 10;
+                                         Message message = handler.obtainMessage();
+                                         message.what = 1;
+                                         handler.sendMessage(message);
+//                                         System.out.println("stay still");
+                                     }
+                                 }
+
+                             }
+
+                             handler_new.postDelayed(this, 10);
+
+                         }
+                     }
+        );
     }
 
     @ Subscribe(threadMode = ThreadMode.MAIN)
