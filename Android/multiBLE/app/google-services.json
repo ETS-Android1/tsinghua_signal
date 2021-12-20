@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "82372162381",
+    "project_id": "multible-320f9",
+    "storage_bucket": "multible-320f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82372162381:android:a331426d12d26030a3bd04",
+        "android_client_info": {
+          "package_name": "com.maiji.magkareble40"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "82372162381-pmqeesghq6n802bv7enu31t9910csjs0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9nwF8aPvCsLw7mm_P6l45Jk0qwT0JoWQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "82372162381-pmqeesghq6n802bv7enu31t9910csjs0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -40,7 +40,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         }
         switch (v.getId()){
             case R.id.btnSignIn:
-                
+
                 break;
             case R.id.btnSignUp:
                 break;
