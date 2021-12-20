@@ -26,6 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SelectDeviceActivity"></activity>
+        <activity android:name=".LoginActivity"></activity>
 
         <meta-data
             android:name="android.max_aspect"

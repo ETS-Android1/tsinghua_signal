@@ -217,7 +217,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         txtShowRes.append("0 seconds");
 
         TextView tv_login = (TextView) findViewById(R.id.tv_left);
-        if(isLogin){
+        if(!isLogin){
             tv_login.setText("Sign in");
         }
         else {
@@ -645,6 +645,10 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                         Log.e("---", "添加了" + connectDeviceMacList.get(i));
                     }
                     connentBluetooth();
+                    break;
+                case 2:
+                    Log.i("onActivityResult",data.getStringArrayListExtra("user").toString());
+                    isLogin = true;
                     break;
             }
         }

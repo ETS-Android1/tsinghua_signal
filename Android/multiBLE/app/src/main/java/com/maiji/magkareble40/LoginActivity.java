@@ -1,23 +1,39 @@
 package com.maiji.magkareble40;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class LoginActivity extends Activity implements View.OnClickListener{
     private Button btnSignIn;
     private Button btnSignUp;
     private EditText txtUserName;
     private EditText txtPassword;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     private void initView(){
@@ -40,10 +56,76 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         }
         switch (v.getId()){
             case R.id.btnSignIn:
-
+                sign_in(userName,passWord);
                 break;
             case R.id.btnSignUp:
+                sign_up(userName,passWord);
                 break;
         }
     }
+
+    private void sign_up(String userName, String password) {
+        String TAG = "sign_up";
+        mAuth.createUserWithEmailAndPassword(userName, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUser:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+//                            updateUI(user);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUser:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "SignUp failed.",
+                                    Toast.LENGTH_SHORT).show();
+//                            updateUI(null);
+                        }
+                    }
+                });
+    }
+
+    private void sign_in(String userName, String password){
+        String TAG = "sign_in";
+        mAuth.signInWithEmailAndPassword(userName, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signIn:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+//                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signIn:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "SignIn failed.",
+                                    Toast.LENGTH_SHORT).show();
+//                            updateUI(null);
+                        }
+                    }
+                });
+    }
+
+    private void updateUI(FirebaseUser user){
+        Intent intent = new Intent();
+//        intent.putExtra("user",user);                // 设置结果，并进行传送
+        intent.putExtra("user","auth success");
+        this.setResult(2, intent);
+        this.finish();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            reload();
+        }
+    }
+
+    public  void reload() { }
 }
