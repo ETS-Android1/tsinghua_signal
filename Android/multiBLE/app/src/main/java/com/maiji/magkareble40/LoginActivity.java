@@ -74,7 +74,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUser:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-//                            updateUI(user);
+                            updateUI(user);
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -97,7 +97,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signIn:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-//                            updateUI(user);
+                            updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signIn:failure", task.getException());

@@ -647,7 +647,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                     connentBluetooth();
                     break;
                 case 2:
-                    Log.i("onActivityResult",data.getStringArrayListExtra("user").toString());
+                    Log.i("onActivityResult",data.getStringExtra("user"));
                     isLogin = true;
                     break;
             }
