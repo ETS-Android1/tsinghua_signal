@@ -162,6 +162,24 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         return Context;
     }
 
+    private void resetVariables(){
+        motionCnt = new HashMap<Integer, Integer>();
+        for(int i=0;i<15;i++){
+            motionCnt.put(i,0);
+        }
+        isStart = false;
+        startCnt = 1;
+        numCnt = 0;
+        isFirstMotion = true;
+        motionTypeFinal = 14;
+        resetPredict = false;
+        headphoneState = "Put on";
+        motionTypeRaw = 14;
+        timerTotal = 0;
+        isLogin = false;
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
 
     private void initVariables() {
         connectDeviceMacList = new ArrayList<>();
@@ -189,29 +207,13 @@ public class XBleActivity extends Activity implements View.OnClickListener {
 
         svm = new ClfModel();
 
-        motionCnt = new HashMap<Integer, Integer>();
-        for(int i=0;i<15;i++){
-            motionCnt.put(i,0);
-        }
-
-        isStart = false;
-        startCnt = 1;
-        numCnt = 0;
-        isFirstMotion = true;
-        motionTypeFinal = 14;
-        resetPredict = false;
-        headphoneState = "Put on";
-        motionTypeRaw = 14;
-        timerTotal = 0;
-        isLogin = false;
         isConnected = false;
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         Date date = new Date(System.currentTimeMillis());
         today = formatter.format(date).substring(0,10);
 
+        resetVariables();
     }
 
 
@@ -296,7 +298,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
             case R.id.tv_left:
                 if(isLogin){
                     sign_out();
-                    initVariables();
+                    resetVariables();
                     initView();
                     Toast.makeText(getApplicationContext(), "Sign out successfully!", Toast.LENGTH_SHORT).show();
                 }
@@ -732,6 +734,12 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         txtShowRes.append(timerTotal + " seconds");
     }
 
+    public void upload(String key, int value){
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("users/"+userId+"/"+today+'/'+key, value);
+        mDatabase.updateChildren(updates);
+    }
+
     public void resetParam(){
         isStart = false;
         startCnt = 1;
@@ -862,6 +870,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                             }
                             motionCnt.put(res,motionCnt.get(res) + 1);
                             numCnt = 0;
+                            upload(motionType.get(res),motionCnt.get(res));
                         }
 
                         isStart = false;
@@ -901,12 +910,12 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                                              Message message = handler.obtainMessage();
                                              message.what = 1;
                                              handler.sendMessage(message);
+                                             upload("timerTotal", timerTotal);
 //                                         System.out.println("stay still");
                                          }
                                      }
                                  }
                              }
-
 
                              handler_new.postDelayed(this, 10);
 
@@ -921,11 +930,11 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         for (int i = 0; i < connectDeviceMacList.size(); i++) {
             txtContentMac.append("---------------------------------------------------------------------" + "\n");
             txtContentMac.append("Mac:" + connectDeviceMacList.get(i) + "\n");
-            txtContentMac.append("加速度:" + "X:" + String.format("%.2fg", floats[i][3]) + "   " + "Y:" + String.format("%.2fg", floats[i][4])
+            txtContentMac.append("Acceleration: " + "X:" + String.format("%.2fg", floats[i][3]) + "   " + "Y:" + String.format("%.2fg", floats[i][4])
                     + "   " + "Z:" + String.format("%.2fg", floats[i][5]) + "\n");
-            txtContentMac.append("角速度:" + "X:" + String.format("%.2f°/s", floats[i][6]) + "   " + "Y:" + String.format("%.2f°/s", floats[i][6])
+            txtContentMac.append("Angular Speed: " + "X:" + String.format("%.2f°/s", floats[i][6]) + "   " + "Y:" + String.format("%.2f°/s", floats[i][6])
                     + "   " + "Z:" + String.format("%.2f°/s", floats[i][8]) + "\n");
-            txtContentMac.append("角    度:" + "X:" + String.format("%.2f°", floats[i][9]) + "   " + "Y:" + String.format("%.2f°", floats[i][10])
+            txtContentMac.append("Angle: " + "X:" + String.format("%.2f°", floats[i][9]) + "   " + "Y:" + String.format("%.2f°", floats[i][10])
                     + "   " + "Z:" + String.format("%.2f°", floats[i][11]) + "\n");
         }
 
