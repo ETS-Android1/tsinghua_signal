@@ -87,6 +87,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
 
     private TextView txtShowRes; //显示预测结果
     private TextView txtMotionName; //显示预测结果
+    private TextView txtCurRes;
     private static Context Context = null;
     private ArrayList<ArrayList<Float>> imuData;
     final private int maxLen = 100;
@@ -141,16 +142,19 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                         if(res > 5){
                             res -= 4;
                         }
-                        txtShowRes.setText(motionType.get(res)+' '+msg.arg2+"\n\n");
+                        txtCurRes.setText(motionType.get(res)+' '+msg.arg2+"\n\n");
                         break;
                     case 1:
-                        txtShowRes.setText(motionType.get(10)+"\n\n");
+                        txtCurRes.setText(motionType.get(10)+"\n\n");
+                    case 2:
+                        txtShowRes.setText("");
+                        for(int i=0;i<10;i++){
+                            txtShowRes.append(motionCnt.get(i)+" groups"+"\n");
+                        }
+                        txtShowRes.append(timerTotal + " seconds");
+                        break;
                 }
 
-                for(int i=0;i<10;i++){
-                    txtShowRes.append(motionCnt.get(i)+" groups"+"\n");
-                }
-                txtShowRes.append(timerTotal + " seconds");
             }
         };
 
@@ -230,10 +234,12 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         Record=(Button) findViewById(R.id.bt_Record);Record.setOnClickListener(this);
         button_cc = (Button) findViewById(R.id.bt_MagCali);button_cc.setOnClickListener(this);//磁场校准
 
+        txtCurRes = (TextView) findViewById(R.id.txtCurRes);
+        txtCurRes.setText("none");
         txtMotionName = (TextView) findViewById(R.id.txtMotionName);
-        txtMotionName.setText("current motion:\n\n");
+        txtMotionName.setText("");
         txtShowRes = (TextView) findViewById(R.id.txtShowRes);
-        txtShowRes.setText("None\n\n");
+        txtShowRes.setText("");
         for(int i=0;i<10;i++){
             txtMotionName.append(motionType.get(i)+":\n");
             txtShowRes.append(motionCnt.get(i)+" groups\n");
@@ -727,7 +733,8 @@ public class XBleActivity extends Activity implements View.OnClickListener {
     }
 
     public void updateCntUI(){
-        txtShowRes.setText(motionType.get(10)+"\n\n");
+        txtCurRes.setText("none");
+        txtShowRes.setText("");
         for(int i=0;i<10;i++){
             txtShowRes.append(motionCnt.get(i)+" groups"+"\n");
         }
@@ -871,6 +878,9 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                             motionCnt.put(res,motionCnt.get(res) + 1);
                             numCnt = 0;
                             upload(motionType.get(res),motionCnt.get(res));
+                            Message message = handler.obtainMessage();
+                            message.what = 2;
+                            handler.sendMessage(message);
                         }
 
                         isStart = false;
