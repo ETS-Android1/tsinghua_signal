@@ -20,6 +20,9 @@ import android.os.Message;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -142,10 +145,11 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                         if(res > 5){
                             res -= 4;
                         }
-                        txtCurRes.setText(motionType.get(res)+' '+msg.arg2+"\n\n");
+                        txtCurRes.setText(motionType.get(res)+' '+msg.arg2);
                         break;
                     case 1:
-                        txtCurRes.setText(motionType.get(10)+"\n\n");
+                        txtCurRes.setText(motionType.get(10));
+                        break;
                     case 2:
                         txtShowRes.setText("");
                         for(int i=0;i<10;i++){
@@ -159,6 +163,10 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         };
 
         stillTimeCounter();
+
+//        final DrawerLayout drawerLayout=findViewById(R.id.drawerLayout);
+
+
 
     }
 
@@ -255,6 +263,8 @@ public class XBleActivity extends Activity implements View.OnClickListener {
             tv_login.setText("Sign out");
         }
         tv_login.setOnClickListener(this);
+
+        txtShowRes.setOnClickListener(this);
     }
 
 
@@ -297,6 +307,10 @@ public class XBleActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.txtShowRes:
+                Intent intent_history = new Intent(this, HistoryActivity.class);
+                startActivity(intent_history);
+                break;
             case R.id.tv_right:
                 Intent intent = new Intent(this, SelectDeviceActivity.class);
                 startActivityForResult(intent, 1);
