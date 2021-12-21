@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
@@ -32,7 +34,14 @@ import com.blakequ.bluetooth_manager_lib.connect.ConnectConfig;
 import com.blakequ.bluetooth_manager_lib.connect.ConnectState;
 import com.blakequ.bluetooth_manager_lib.connect.ConnectStateListener;
 import com.blakequ.bluetooth_manager_lib.connect.multiple.MultiConnectManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -102,6 +111,9 @@ public class XBleActivity extends Activity implements View.OnClickListener {
     private Handler handler;
     private boolean isLogin = false;
     public static FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
+    private String today;
+    private String userId;
 
 
     Button button,button_cc,Record;
@@ -192,6 +204,12 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         timerTotal = 0;
         isLogin = false;
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        Date date = new Date(System.currentTimeMillis());
+        today = formatter.format(date).substring(0,10);
+
     }
 
 
@@ -651,13 +669,61 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                     connentBluetooth();
                     break;
                 case 2:
-                    Log.i("onActivityResult",data.getStringExtra("user"));
+                    String res = data.getStringExtra("user");
+                    Log.i("onActivityResult",res);
                     isLogin = true;
                     TextView tv_login = findViewById(R.id.tv_left);
                     tv_login.setText("Sign out");
+                    userId = mAuth.getCurrentUser().getUid();
+                    if(res.equals( "sign_up")){
+                        writeNewUser();
+                    }
+                    else{
+                        loadData();
+                    }
                     break;
             }
         }
+    }
+
+    public void writeNewUser() {
+        Post post = new Post(motionType, motionCnt, timerTotal);
+        Map<String, Object> postValues = post.toMap();
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("users/"+userId+'/'+today, postValues);
+        mDatabase.updateChildren(updates);
+    }
+
+    public void loadData(){
+        mDatabase.child("users").child(userId).child(today).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+                else {
+                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
+//                    Post post = task.getResult().getValue(Post.class);
+//                    Log.d("firebase", String.valueOf(post.motionTypeCnt));
+//                    Log.d("firebase", String.valueOf(post.timerTotal));
+                    GenericTypeIndicator<Map<String ,Integer>> t = new GenericTypeIndicator<Map<String ,Integer>>() {};
+                    Map<String,Integer> map= task.getResult().getValue(t);
+                    for(int i=0;i<10;i++){
+                        motionCnt.put(i,map.get(motionType.get(i)));
+                    }
+                    timerTotal = map.get("timerTotal");
+                    updateCntUI();
+                }
+            }
+        });
+    }
+
+    public void updateCntUI(){
+        txtShowRes.setText(motionType.get(10)+"\n\n");
+        for(int i=0;i<10;i++){
+            txtShowRes.append(motionCnt.get(i)+" groups"+"\n");
+        }
+        txtShowRes.append(timerTotal + " seconds");
     }
 
     public void resetParam(){

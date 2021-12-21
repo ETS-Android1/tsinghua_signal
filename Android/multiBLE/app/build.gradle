@@ -46,6 +46,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-database'
 
 
 //    provided files ('C:/Program Files/Java/jdk1.8.0_311/jre/lib/rt.jar')
