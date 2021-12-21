@@ -114,6 +114,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
     private DatabaseReference mDatabase;
     private String today;
     private String userId;
+    private boolean isConnected;
 
 
     Button button,button_cc,Record;
@@ -203,6 +204,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         motionTypeRaw = 14;
         timerTotal = 0;
         isLogin = false;
+        isConnected = false;
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -449,9 +451,11 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                         break;
                     case CONNECTED:
                         Log.e("connectStateX", "设备:" + address + "连接状态:" + "成功");
+                        isConnected = true;
                         break;
                     case NORMAL:
                         Log.e("connectStateX", "设备:" + address + "连接状态:" + "失败");
+                        isConnected = false;
                         break;
                 }
             }
@@ -703,16 +707,18 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                 }
                 else {
                     Log.d("firebase", String.valueOf(task.getResult().getValue()));
-//                    Post post = task.getResult().getValue(Post.class);
-//                    Log.d("firebase", String.valueOf(post.motionTypeCnt));
-//                    Log.d("firebase", String.valueOf(post.timerTotal));
                     GenericTypeIndicator<Map<String ,Integer>> t = new GenericTypeIndicator<Map<String ,Integer>>() {};
                     Map<String,Integer> map= task.getResult().getValue(t);
-                    for(int i=0;i<10;i++){
-                        motionCnt.put(i,map.get(motionType.get(i)));
+                    if(map != null){
+                        for(int i=0;i<10;i++){
+                            motionCnt.put(i,map.get(motionType.get(i)));
+                        }
+                        timerTotal = map.get("timerTotal");
+                        updateCntUI();
                     }
-                    timerTotal = map.get("timerTotal");
-                    updateCntUI();
+                    else{
+                        writeNewUser();
+                    }
                 }
             }
         });
@@ -876,29 +882,31 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         handler_new.post(new Runnable() {
                          @Override
                          public void run() {
-                             if(isStart){
-                                 if(delta_total_time > 10){
-                                     resetParam();
+                             if(isConnected){
+                                 if(isStart){
+                                     if(delta_total_time > 10){
+                                         resetParam();
+                                     }
+                                     delta_total_time = 0;
                                  }
-                                 delta_total_time = 0;
-                             }
-                             else {
-                                 long end_time = System.currentTimeMillis();
-                                 if(end_time-start_time > 1000){
-                                     delta_total_time += 1;
-                                     start_time = System.currentTimeMillis();
-                                     if(delta_total_time > 15){
-                                         timerTotal += 1;
-                                         motionTypeRaw = 10;
-                                         motionTypeFinal = 10;
-                                         Message message = handler.obtainMessage();
-                                         message.what = 1;
-                                         handler.sendMessage(message);
+                                 else {
+                                     long end_time = System.currentTimeMillis();
+                                     if(end_time-start_time > 1000){
+                                         delta_total_time += 1;
+                                         start_time = System.currentTimeMillis();
+                                         if(delta_total_time > 15){
+                                             timerTotal += 1;
+                                             motionTypeRaw = 10;
+                                             motionTypeFinal = 10;
+                                             Message message = handler.obtainMessage();
+                                             message.what = 1;
+                                             handler.sendMessage(message);
 //                                         System.out.println("stay still");
+                                         }
                                      }
                                  }
-
                              }
+
 
                              handler_new.postDelayed(this, 10);
 
