@@ -66,14 +66,14 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 
     private void sign_up(String userName, String password) {
         String TAG = "sign_up";
-        mAuth.createUserWithEmailAndPassword(userName, password)
+        XBleActivity.mAuth.createUserWithEmailAndPassword(userName, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUser:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser user = XBleActivity.mAuth.getCurrentUser();
                             updateUI(user);
 
                         } else {
@@ -89,14 +89,14 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 
     private void sign_in(String userName, String password){
         String TAG = "sign_in";
-        mAuth.signInWithEmailAndPassword(userName, password)
+        XBleActivity.mAuth.signInWithEmailAndPassword(userName, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signIn:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser user = XBleActivity.mAuth.getCurrentUser();
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -121,7 +121,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = XBleActivity.mAuth.getCurrentUser();
         if(currentUser != null){
             reload();
         }

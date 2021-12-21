@@ -32,6 +32,7 @@ import com.blakequ.bluetooth_manager_lib.connect.ConnectConfig;
 import com.blakequ.bluetooth_manager_lib.connect.ConnectState;
 import com.blakequ.bluetooth_manager_lib.connect.ConnectStateListener;
 import com.blakequ.bluetooth_manager_lib.connect.multiple.MultiConnectManager;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -100,6 +101,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
 
     private Handler handler;
     private boolean isLogin = false;
+    public static FirebaseAuth mAuth;
 
 
     Button button,button_cc,Record;
@@ -189,6 +191,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
         motionTypeRaw = 14;
         timerTotal = 0;
         isLogin = false;
+        mAuth = FirebaseAuth.getInstance();
     }
 
 
@@ -272,6 +275,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.tv_left:
                 if(isLogin){
+                    sign_out();
                     initVariables();
                     initView();
                     Toast.makeText(getApplicationContext(), "Sign out successfully!", Toast.LENGTH_SHORT).show();
@@ -649,6 +653,8 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                 case 2:
                     Log.i("onActivityResult",data.getStringExtra("user"));
                     isLogin = true;
+                    TextView tv_login = findViewById(R.id.tv_left);
+                    tv_login.setText("Sign out");
                     break;
             }
         }
@@ -851,6 +857,10 @@ public class XBleActivity extends Activity implements View.OnClickListener {
 
 
 
+    }
+
+    private void sign_out(){
+        FirebaseAuth.getInstance().signOut();
     }
 
 
