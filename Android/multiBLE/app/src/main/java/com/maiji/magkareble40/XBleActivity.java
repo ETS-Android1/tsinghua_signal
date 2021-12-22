@@ -975,6 +975,7 @@ public class XBleActivity extends Activity implements View.OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        sign_out();
     }
     MyFile myFile;
 

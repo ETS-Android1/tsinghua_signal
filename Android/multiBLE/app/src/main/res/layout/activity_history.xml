@@ -4,6 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:elevation="3dp"
     tools:context=".HistoryActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/graphCnt"
+            android:layout_width="match_parent"
+            android:layout_height="240dip"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/round_corner"
+            android:backgroundTint="#FFF8E1"
+            android:elevation="3dp" />
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/graphTime"
+            android:layout_width="match_parent"
+            android:layout_height="240dip"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/round_corner"
+            android:backgroundTint="#E1F5FE"
+            android:elevation="3dp" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
