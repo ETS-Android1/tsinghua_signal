@@ -147,10 +147,10 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                         }
                         txtCurRes.setText(motionType.get(res)+' '+msg.arg2);
                         break;
-                    case 1:
+                    case 2:
                         txtCurRes.setText(motionType.get(10));
                         break;
-                    case 2:
+                    case 1:
                         txtShowRes.setText("");
                         for(int i=0;i<10;i++){
                             txtShowRes.append(motionCnt.get(i)+" groups"+"\n");
