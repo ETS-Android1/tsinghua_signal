@@ -147,10 +147,15 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                         }
                         txtCurRes.setText(motionType.get(res)+' '+msg.arg2);
                         break;
-                    case 2:
-                        txtCurRes.setText(motionType.get(10));
-                        break;
                     case 1:
+                        txtCurRes.setText(motionType.get(10));
+                        txtShowRes.setText("");
+                        for(int i=0;i<10;i++){
+                            txtShowRes.append(motionCnt.get(i)+" groups"+"\n");
+                        }
+                        txtShowRes.append(timerTotal + " seconds");
+                        break;
+                    case 2:
                         txtShowRes.setText("");
                         for(int i=0;i<10;i++){
                             txtShowRes.append(motionCnt.get(i)+" groups"+"\n");
@@ -891,7 +896,11 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                             }
                             motionCnt.put(res,motionCnt.get(res) + 1);
                             numCnt = 0;
-                            upload(motionType.get(res),motionCnt.get(res));
+                            System.out.println(mAuth.getCurrentUser());
+                            if(mAuth.getCurrentUser() != null){
+                                System.out.println("enter");
+                                upload(motionType.get(res),motionCnt.get(res));
+                            }
                             Message message = handler.obtainMessage();
                             message.what = 2;
                             handler.sendMessage(message);
@@ -934,7 +943,9 @@ public class XBleActivity extends Activity implements View.OnClickListener {
                                              Message message = handler.obtainMessage();
                                              message.what = 1;
                                              handler.sendMessage(message);
-                                             upload("timerTotal", timerTotal);
+                                             if(mAuth.getCurrentUser() != null){
+                                                 upload("timerTotal", timerTotal);
+                                             }
 //                                         System.out.println("stay still");
                                          }
                                      }

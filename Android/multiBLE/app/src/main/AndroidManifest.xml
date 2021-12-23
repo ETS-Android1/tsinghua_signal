@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".HistoryActivity"></activity>
+        <activity android:name=".LoginActivity" />
         <activity android:name=".XBleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,7 +28,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".SelectDeviceActivity" />
-        <activity android:name=".LoginActivity" />
 
         <meta-data
             android:name="android.max_aspect"

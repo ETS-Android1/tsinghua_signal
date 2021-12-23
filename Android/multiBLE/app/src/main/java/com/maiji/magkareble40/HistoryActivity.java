@@ -144,6 +144,8 @@ public class HistoryActivity extends AppCompatActivity {
         }
         BarGraphSeries<DataPoint> seriesCnt = new BarGraphSeries<DataPoint>(dataCnt);
         BarGraphSeries<DataPoint> seriesTime = new BarGraphSeries<DataPoint>(dataTime);
+        seriesCnt.setSpacing(20);
+        seriesTime.setSpacing(20);
         graphCnt.removeAllSeries();
         graphTime.removeAllSeries();;
         graphCnt.addSeries(seriesCnt);
